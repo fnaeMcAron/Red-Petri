@@ -715,7 +715,7 @@ public partial class @Layout: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""20085f50-b30c-450d-9d12-77b5ef2d963d"",
-                    ""path"": ""<Keyboard>/tab"",
+                    ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";PC"",

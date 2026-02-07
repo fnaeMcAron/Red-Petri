@@ -11,6 +11,8 @@ public class DocController : MonoBehaviour
 
     public void OnOpenMenu(InputAction.CallbackContext ctx)
     {
+        if (player.isDead) return;
+
         if (!ctx.performed) return;
 
         menuOpen = !menuOpen;
@@ -28,6 +30,7 @@ public class DocController : MonoBehaviour
 
     public void CloseMenu()
     {
+
         menuUI.SetActive(false);
         playerInput.SwitchCurrentActionMap("Student");
         menuOpen = false;

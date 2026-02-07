@@ -2,13 +2,25 @@
 using UnityEngine.InputSystem;
 using static UnityEngine.UI.CanvasScaler;
 using UnityEngine.Rendering.Universal;
+using TMPro;
 
 public class StudentMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 7f;
-    public float wallWalkSpeed = 4f;
+    public bool isDead;
+
+    [Header("Гены")]
     public Light2D light;
+    public float wallWalkSpeed = 4f;
+    public int jumpCount;
+    public float dashForce = 14f;
+    public int maxDashCount = 2;
+
+    [Header("Смерть")]
+    public Transform respawnPoint;
+    public GameObject deathMenu;
+    Vector3 cachedRespawnPos;
 
     Rigidbody2D rb;
     bool grounded = true;
@@ -20,7 +32,6 @@ public class StudentMovement : MonoBehaviour
     [HideInInspector] public bool canActivateElectric; //001
     [HideInInspector] public bool lightEnabled; // 101
     [HideInInspector] public bool canChangeSize; // 011
-    public int jumpCount;
     [HideInInspector] public bool extraJump; // 111
 
     bool roomAllowsWallWalk;
@@ -28,22 +39,46 @@ public class StudentMovement : MonoBehaviour
 
     float baseSpeed;
     float baseJumpForce;
-    Vector3 baseScale;
+    //Vector3 baseScale;
     float baseGravity;
     int jumpRemains;
+    Collider2D col;
+
+    int dashRemains;
+    bool isDashing;
+    float dashTime = 0.12f;
+    float dashTimer;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+
+        cachedRespawnPos = respawnPoint != null
+        ? respawnPoint.position
+        : transform.position;
 
         baseSpeed = speed;
         baseJumpForce = jumpForce;
-        baseScale = transform.localScale;
+        //baseScale = transform.localScale;
         baseGravity = rb.gravityScale;
+        dashRemains = maxDashCount;
     }
 
     void FixedUpdate()
     {
+        if (isDead) return;
+
+
+        if (isDashing)
+        {
+            dashTimer -= Time.fixedDeltaTime;
+            if (dashTimer <= 0)
+                isDashing = false;
+
+            return;
+        }
+
         if (WallWalkMode)
         {
             rb.velocity = moveVec * wallWalkSpeed;
@@ -64,6 +99,53 @@ public class StudentMovement : MonoBehaviour
     {
         grounded = true;
         jumpRemains = jumpCount;
+        dashRemains = maxDashCount;
+    }
+
+    public void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        rb.velocity = Vector2.zero;
+        //rb.gravityScale = 0;
+        //rb.simulated = false;
+
+        moveVec = Vector2.zero;
+
+        if (col != null)
+            col.enabled = false;
+
+        deathMenu.SetActive(true);
+        ResetModifiers();
+    }
+
+    public void Respawn()
+    {
+        isDead = false;
+
+        transform.position = cachedRespawnPos;
+
+        //rb.simulated = true;
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.gravityScale = baseGravity;
+
+        if (col != null)
+            col.enabled = true;
+
+        jumpRemains = jumpCount;
+        dashRemains = maxDashCount;
+        grounded = false;
+        isDashing = false;
+
+        deathMenu.SetActive(false);
+    }
+
+    public void SetRespawnPoint(Transform point)
+    {
+        cachedRespawnPos = point.position;
     }
 
     void UpdateWallWalkState()
@@ -79,12 +161,26 @@ public class StudentMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext ctx)
     {
+        if (isDead) return;
+
         moveVec = ctx.ReadValue<Vector2>();
+
+        if (moveVec == Vector2.left)
+            GetComponent<SpriteRenderer>().flipX = true;
+        else 
+            GetComponent<SpriteRenderer>().flipX = false;
+
     }
 
     public void OnJump(InputAction.CallbackContext ctx)
     {
         if (!ctx.performed) return;
+
+        if (isDead)
+        {
+            Respawn();
+            return;
+        }
 
         if (canWallWalk && roomAllowsWallWalk) return;
 
@@ -100,11 +196,31 @@ public class StudentMovement : MonoBehaviour
         }
     }
 
+    public void OnDash(InputAction.CallbackContext ctx)
+    {
+        if (isDead) return;
+        if (!ctx.started) return;
+        if (!canDash) return;
+        if (dashRemains <= 0) return;
+        if (WallWalkMode) return;
+
+        float dir = moveVec.x;
+
+        if (Mathf.Abs(dir) < 0.1f)
+            dir = GetComponent<SpriteRenderer>().flipX == true ? -1 : 1;
+
+        rb.velocity = new Vector2(dir * dashForce, 0f);
+
+        dashRemains--;
+        isDashing = true;
+        dashTimer = dashTime;
+    }
+
     public void ResetModifiers()
     {
         speed = baseSpeed;
         jumpForce = baseJumpForce;
-        transform.localScale = baseScale;
+        //transform.localScale = baseScale;
 
         airControl = false;
         canWallWalk = false;
