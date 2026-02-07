@@ -8,11 +8,6 @@ public class DocController : MonoBehaviour
     public StudentMovement player;
 
     bool menuOpen;
-    void Update()
-    {
-        if (playerInput.currentActionMap != null)
-            Debug.Log(playerInput.currentActionMap.name);
-    }
 
     public void OnOpenMenu(InputAction.CallbackContext ctx)
     {
@@ -36,11 +31,6 @@ public class DocController : MonoBehaviour
         menuUI.SetActive(false);
         playerInput.SwitchCurrentActionMap("Student");
         menuOpen = false;
-        Debug.Log("ÊÍÎÏÊÀ ÆÈÂÀ");
+        //Debug.Log("ÊÍÎÏÊÀ ÆÈÂÀ");
     }
-
-    // ÊÍÎÏÊÈ ÌÎÄÈÔÈÊÀÖÈÉ
-    public void AddSpeed() => player.speed += 1f;
-    public void AddJump() => player.jumpForce += 1f;
-    public void AddScale() => player.transform.localScale += Vector3.one * 0.1f;
 }

@@ -634,12 +634,21 @@ public partial class @Layout: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ability"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0e2fb89-baa8-4951-85bf-3765cbb72e29"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": ""2D Vector"",
-                    ""id"": ""3c7de1f9-6ef0-42ca-809f-84b1fcb595ad"",
+                    ""id"": ""67145223-c84c-4176-ba97-4aa1d6cb88ef"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -649,23 +658,45 @@ public partial class @Layout: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""up"",
+                    ""id"": ""4c15f1f0-96be-45ee-8262-7e43150c5d0e"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""d039d8bc-f691-4ece-9819-ef0557d40c00"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": ""left"",
-                    ""id"": ""d233e0be-c964-4eb7-995d-93150a9ac006"",
+                    ""id"": ""a405685d-e2dd-46e6-b8ca-2ca44b9afea8"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";PC"",
+                    ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""32073f68-5fee-4947-a5c5-1da5a532d640"",
+                    ""id"": ""834bd61e-ec24-47d3-86ca-d4b9973b4c68"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";PC"",
+                    ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -691,6 +722,17 @@ public partial class @Layout: IInputActionCollection2, IDisposable
                     ""action"": ""OpenDoc"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""02adb167-d560-48ff-8cd8-1a39cd0be5b6"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -714,6 +756,7 @@ public partial class @Layout: IInputActionCollection2, IDisposable
         m_Student_Move = m_Student.FindAction("Move", throwIfNotFound: true);
         m_Student_Jump = m_Student.FindAction("Jump", throwIfNotFound: true);
         m_Student_OpenDoc = m_Student.FindAction("OpenDoc", throwIfNotFound: true);
+        m_Student_Ability = m_Student.FindAction("Ability", throwIfNotFound: true);
     }
 
     ~@Layout()
@@ -993,6 +1036,7 @@ public partial class @Layout: IInputActionCollection2, IDisposable
     private readonly InputAction m_Student_Move;
     private readonly InputAction m_Student_Jump;
     private readonly InputAction m_Student_OpenDoc;
+    private readonly InputAction m_Student_Ability;
     /// <summary>
     /// Provides access to input actions defined in input action map "Student".
     /// </summary>
@@ -1016,6 +1060,10 @@ public partial class @Layout: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Student/OpenDoc".
         /// </summary>
         public InputAction @OpenDoc => m_Wrapper.m_Student_OpenDoc;
+        /// <summary>
+        /// Provides access to the underlying input action "Student/Ability".
+        /// </summary>
+        public InputAction @Ability => m_Wrapper.m_Student_Ability;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1051,6 +1099,9 @@ public partial class @Layout: IInputActionCollection2, IDisposable
             @OpenDoc.started += instance.OnOpenDoc;
             @OpenDoc.performed += instance.OnOpenDoc;
             @OpenDoc.canceled += instance.OnOpenDoc;
+            @Ability.started += instance.OnAbility;
+            @Ability.performed += instance.OnAbility;
+            @Ability.canceled += instance.OnAbility;
         }
 
         /// <summary>
@@ -1071,6 +1122,9 @@ public partial class @Layout: IInputActionCollection2, IDisposable
             @OpenDoc.started -= instance.OnOpenDoc;
             @OpenDoc.performed -= instance.OnOpenDoc;
             @OpenDoc.canceled -= instance.OnOpenDoc;
+            @Ability.started -= instance.OnAbility;
+            @Ability.performed -= instance.OnAbility;
+            @Ability.canceled -= instance.OnAbility;
         }
 
         /// <summary>
@@ -1210,5 +1264,12 @@ public partial class @Layout: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOpenDoc(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ability" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAbility(InputAction.CallbackContext context);
     }
 }
