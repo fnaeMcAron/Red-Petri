@@ -9,6 +9,7 @@ public class RoomCameraController : MonoBehaviour
     [Header("Follow")]
     public float followLerp = 8f;
     public float snapSpeed = 40f;
+    public float YUpPlayer;
 
     Bounds roomBounds;
     bool hasRoom;
@@ -47,7 +48,7 @@ public class RoomCameraController : MonoBehaviour
         float maxY = roomBounds.max.y - camHalfH;
 
         target.x = Mathf.Clamp(target.x, minX, maxX);
-        target.y = Mathf.Clamp(target.y, minY, maxY);
+        target.y = Mathf.Clamp(target.y, minY, maxY) + YUpPlayer;
         target.z = transform.position.z;
 
         transform.position = Vector3.Lerp(
