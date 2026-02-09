@@ -10,6 +10,9 @@ public class StudentMovement : MonoBehaviour
     public float jumpForce = 7f;
     public bool isDead;
 
+    public float moveX;
+    public AnimationPlayer anim;
+
     [Header("Гены")]
     public Light2D light;
     public float wallWalkSpeed = 4f;
@@ -63,6 +66,8 @@ public class StudentMovement : MonoBehaviour
         //baseScale = transform.localScale;
         baseGravity = rb.gravityScale;
         dashRemains = maxDashCount;
+
+        anim = GetComponent<AnimationPlayer>();
     }
 
     void FixedUpdate()
@@ -92,6 +97,9 @@ public class StudentMovement : MonoBehaviour
     }
     void Update()
     {
+
+        anim.isGrounded = grounded;
+
         light.enabled = lightEnabled;
     }
 
@@ -170,6 +178,7 @@ public class StudentMovement : MonoBehaviour
         else 
             GetComponent<SpriteRenderer>().flipX = false;
 
+        anim.moveX = moveVec.x;
     }
 
     public void OnJump(InputAction.CallbackContext ctx)
@@ -188,6 +197,7 @@ public class StudentMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             grounded = false;
+            anim.PlayJump();
         }
         else if (extraJump && jumpRemains > -1)
         {

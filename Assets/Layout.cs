@@ -643,6 +643,15 @@ public partial class @Layout: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Suicide"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd790809-3229-4935-a9c1-020a7d862d3c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -733,6 +742,17 @@ public partial class @Layout: IInputActionCollection2, IDisposable
                     ""action"": ""Ability"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""84b54139-c000-49fa-8660-a027aab11403"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Suicide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -757,6 +777,7 @@ public partial class @Layout: IInputActionCollection2, IDisposable
         m_Student_Jump = m_Student.FindAction("Jump", throwIfNotFound: true);
         m_Student_OpenDoc = m_Student.FindAction("OpenDoc", throwIfNotFound: true);
         m_Student_Ability = m_Student.FindAction("Ability", throwIfNotFound: true);
+        m_Student_Suicide = m_Student.FindAction("Suicide", throwIfNotFound: true);
     }
 
     ~@Layout()
@@ -1037,6 +1058,7 @@ public partial class @Layout: IInputActionCollection2, IDisposable
     private readonly InputAction m_Student_Jump;
     private readonly InputAction m_Student_OpenDoc;
     private readonly InputAction m_Student_Ability;
+    private readonly InputAction m_Student_Suicide;
     /// <summary>
     /// Provides access to input actions defined in input action map "Student".
     /// </summary>
@@ -1064,6 +1086,10 @@ public partial class @Layout: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Student/Ability".
         /// </summary>
         public InputAction @Ability => m_Wrapper.m_Student_Ability;
+        /// <summary>
+        /// Provides access to the underlying input action "Student/Suicide".
+        /// </summary>
+        public InputAction @Suicide => m_Wrapper.m_Student_Suicide;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1102,6 +1128,9 @@ public partial class @Layout: IInputActionCollection2, IDisposable
             @Ability.started += instance.OnAbility;
             @Ability.performed += instance.OnAbility;
             @Ability.canceled += instance.OnAbility;
+            @Suicide.started += instance.OnSuicide;
+            @Suicide.performed += instance.OnSuicide;
+            @Suicide.canceled += instance.OnSuicide;
         }
 
         /// <summary>
@@ -1125,6 +1154,9 @@ public partial class @Layout: IInputActionCollection2, IDisposable
             @Ability.started -= instance.OnAbility;
             @Ability.performed -= instance.OnAbility;
             @Ability.canceled -= instance.OnAbility;
+            @Suicide.started -= instance.OnSuicide;
+            @Suicide.performed -= instance.OnSuicide;
+            @Suicide.canceled -= instance.OnSuicide;
         }
 
         /// <summary>
@@ -1271,5 +1303,12 @@ public partial class @Layout: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAbility(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Suicide" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSuicide(InputAction.CallbackContext context);
     }
 }

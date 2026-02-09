@@ -21,7 +21,6 @@ public class menuUI : MonoBehaviour
 
     void OnAnyInput(InputAction.CallbackContext context)
     {
-        // Ýעמע לועמה גûחûגאועסÿ ןנט ËÞÁÎÌ גגמהו
         if (!buttons.activeSelf)
         {
             buttons.SetActive(true);
@@ -40,7 +39,7 @@ public class menuUI : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadSceneAsync("Game");
+        SceneManager.LoadSceneAsync("Start");
     }
 
     public void Titles()
